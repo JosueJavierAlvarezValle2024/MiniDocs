@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using MiniDocs.Models;
 
 namespace MiniDocs.Data;
@@ -9,6 +10,7 @@ public static class IdentitySeeder
     {
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+        var context = services.GetRequiredService<ApplicationDbContext>();
 
         foreach (var role in new[] { "SuperAdministrador", "Administrador", "Usuario" })
         {
@@ -21,6 +23,13 @@ public static class IdentitySeeder
                 }
             }
         }
+
+        foreach (var nombre in new[] { "Finanzas", "Tecnología", "Operaciones", "Dirección", "Jurídico", "Ventas" })
+        {
+            if (!await context.Departamentos.AnyAsync(d => d.Nombre == nombre))
+                context.Departamentos.Add(new Departamento { Nombre = nombre, Activo = true });
+        }
+        await context.SaveChangesAsync();
 
         var adminEmail = configuration["AdminSeed:Email"];
         var adminPassword = configuration["AdminSeed:Password"];
