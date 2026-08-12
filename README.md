@@ -32,3 +32,12 @@ Para crear la cuenta única de SuperAdministrador, configura también:
 dotnet user-secrets set "SuperAdminSeed:Email" "superadmin@minidocs.local"
 dotnet user-secrets set "SuperAdminSeed:Password" "Cambia_Esta_Clave_123!"
 ```
+
+## Pruebas
+
+Con MiniDocs ejecutándose en `http://localhost:5046`, ejecuta:
+
+```powershell
+pwsh .\MiniDocs.Tests\SmokeTest.ps1
+dotnet test .\MiniDocs.Tests\MiniDocs.Tests.csproj
+```
