@@ -240,6 +240,38 @@ namespace MiniDocs.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("MiniDocs.Models.AuditoriaDocumento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Accion")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("DocumentoId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UsuarioId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DocumentoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("AuditoriasDocumentos");
+                });
+
             modelBuilder.Entity("MiniDocs.Models.Departamento", b =>
                 {
                     b.Property<int>("Id")
@@ -395,6 +427,25 @@ namespace MiniDocs.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Departamento");
+                });
+
+            modelBuilder.Entity("MiniDocs.Models.AuditoriaDocumento", b =>
+                {
+                    b.HasOne("MiniDocs.Models.Documento", "Documento")
+                        .WithMany()
+                        .HasForeignKey("DocumentoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MiniDocs.Models.ApplicationUser", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Documento");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("MiniDocs.Models.Documento", b =>
