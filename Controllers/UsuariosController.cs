@@ -146,8 +146,24 @@ public class UsuariosController(
     {
         var usuario = await userManager.FindByIdAsync(id);
         if (usuario is null) return NotFound();
+        var usuarioActual = userManager.GetUserId(User);
+        if (usuario.Id == usuarioActual)
+        {
+            TempData["ErrorMessage"] = "No puedes desactivar tu propia cuenta.";
+            return RedirectToAction(nameof(Index));
+        }
         if (!User.IsInRole("SuperAdministrador") && await userManager.IsInRoleAsync(usuario, "SuperAdministrador"))
             return Forbid();
+
+        if (await userManager.IsInRoleAsync(usuario, "SuperAdministrador"))
+        {
+            var superAdmins = await userManager.GetUsersInRoleAsync("SuperAdministrador");
+            if (superAdmins.Count <= 1)
+            {
+                TempData["ErrorMessage"] = "No puedes desactivar al único SuperAdministrador.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
 
         usuario.Activo = !usuario.Activo;
         await userManager.UpdateAsync(usuario);
