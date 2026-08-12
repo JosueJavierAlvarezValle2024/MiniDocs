@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using MiniDocs.Models;
 
 namespace MiniDocs.Data;
 
@@ -7,7 +8,7 @@ public static class IdentitySeeder
     public static async Task SeedAsync(IServiceProvider services, IConfiguration configuration, ILogger logger)
     {
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-        var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
         foreach (var role in new[] { "Administrador", "Usuario" })
         {
@@ -33,11 +34,12 @@ public static class IdentitySeeder
         var admin = await userManager.FindByEmailAsync(adminEmail);
         if (admin is null)
         {
-            admin = new IdentityUser
+            admin = new ApplicationUser
             {
                 UserName = adminEmail,
                 Email = adminEmail,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                NombreCompleto = "Administrador de MiniDocs"
             };
 
             var result = await userManager.CreateAsync(admin, adminPassword);

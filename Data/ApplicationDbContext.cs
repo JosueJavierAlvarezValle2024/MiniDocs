@@ -4,7 +4,7 @@ using MiniDocs.Models;
 
 namespace MiniDocs.Data;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
     public DbSet<Departamento> Departamentos => Set<Departamento>();
 
@@ -15,5 +15,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         builder.Entity<Departamento>()
             .HasIndex(d => d.Nombre)
             .IsUnique();
+
+        builder.Entity<ApplicationUser>()
+            .HasOne(u => u.Departamento)
+            .WithMany()
+            .HasForeignKey(u => u.DepartamentoId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
