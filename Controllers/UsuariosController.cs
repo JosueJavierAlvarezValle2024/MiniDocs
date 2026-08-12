@@ -38,6 +38,55 @@ public class UsuariosController(
         return View(new UsuarioCreateViewModel());
     }
 
+    public async Task<IActionResult> Edit(string id)
+    {
+        var usuario = await userManager.FindByIdAsync(id);
+        if (usuario is null) return NotFound();
+        await CargarOpcionesAsync();
+        return View(new UsuarioEditViewModel
+        {
+            Id = usuario.Id,
+            NombreCompleto = usuario.NombreCompleto,
+            Email = usuario.Email ?? string.Empty,
+            DepartamentoId = usuario.DepartamentoId,
+            Activo = usuario.Activo,
+            Rol = (await userManager.GetRolesAsync(usuario)).FirstOrDefault() ?? "Usuario"
+        });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(UsuarioEditViewModel model)
+    {
+        var usuario = await userManager.FindByIdAsync(model.Id);
+        if (usuario is null) return NotFound();
+        if (!ModelState.IsValid)
+        {
+            await CargarOpcionesAsync();
+            return View(model);
+        }
+
+        usuario.NombreCompleto = model.NombreCompleto;
+        usuario.DepartamentoId = model.DepartamentoId;
+        usuario.Activo = model.Activo;
+        var emailResult = await userManager.SetEmailAsync(usuario, model.Email);
+        var nameResult = await userManager.SetUserNameAsync(usuario, model.Email);
+        var updateResult = await userManager.UpdateAsync(usuario);
+        if (!emailResult.Succeeded || !nameResult.Succeeded || !updateResult.Succeeded)
+        {
+            foreach (var error in emailResult.Errors.Concat(nameResult.Errors).Concat(updateResult.Errors))
+                ModelState.AddModelError(string.Empty, error.Description);
+            await CargarOpcionesAsync();
+            return View(model);
+        }
+
+        var rolesActuales = await userManager.GetRolesAsync(usuario);
+        await userManager.RemoveFromRolesAsync(usuario, rolesActuales);
+        await userManager.AddToRoleAsync(usuario, model.Rol);
+        TempData["SuccessMessage"] = "Usuario actualizado correctamente.";
+        return RedirectToAction(nameof(Index));
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(UsuarioCreateViewModel model)
