@@ -59,6 +59,12 @@ public class UsuariosController(
     {
         var usuario = await userManager.FindByIdAsync(model.Id);
         if (usuario is null) return NotFound();
+        if (model.Rol == "SuperAdministrador" && !await userManager.IsInRoleAsync(usuario, "SuperAdministrador"))
+        {
+            var superAdmins = await userManager.GetUsersInRoleAsync("SuperAdministrador");
+            if (superAdmins.Count > 0)
+                ModelState.AddModelError(nameof(model.Rol), "Solo puede existir un SuperAdministrador.");
+        }
         if (!ModelState.IsValid)
         {
             await CargarOpcionesAsync();
@@ -90,6 +96,13 @@ public class UsuariosController(
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(UsuarioCreateViewModel model)
     {
+        if (model.Rol == "SuperAdministrador")
+        {
+            var superAdmins = await userManager.GetUsersInRoleAsync("SuperAdministrador");
+            if (superAdmins.Count > 0)
+                ModelState.AddModelError(nameof(model.Rol), "Solo puede existir un SuperAdministrador.");
+        }
+
         if (!ModelState.IsValid)
         {
             await CargarOpcionesAsync();
