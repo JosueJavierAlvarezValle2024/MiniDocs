@@ -1,0 +1,18 @@
+## Visual Studio / .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+## Local database and secrets
+*.db
+appsettings.Local.json
+appsettings.*.Local.json
+
+## IDE and OS files
+.idea/
+.vscode/
+*.userprefs
+Thumbs.db
+Desktop.ini
