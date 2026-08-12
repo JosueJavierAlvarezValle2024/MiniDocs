@@ -7,6 +7,7 @@ namespace MiniDocs.Data;
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
 {
     public DbSet<Departamento> Departamentos => Set<Departamento>();
+    public DbSet<Documento> Documentos => Set<Documento>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -20,6 +21,18 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .HasOne(u => u.Departamento)
             .WithMany()
             .HasForeignKey(u => u.DepartamentoId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Documento>()
+            .HasOne(d => d.Departamento)
+            .WithMany()
+            .HasForeignKey(d => d.DepartamentoId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Documento>()
+            .HasOne(d => d.Usuario)
+            .WithMany()
+            .HasForeignKey(d => d.UsuarioId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
