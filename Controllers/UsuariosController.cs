@@ -41,6 +41,8 @@ public class UsuariosController(
     {
         var usuario = await userManager.FindByIdAsync(id);
         if (usuario is null) return NotFound();
+        if (!User.IsInRole("SuperAdministrador") && await userManager.IsInRoleAsync(usuario, "SuperAdministrador"))
+            return Forbid();
         await CargarOpcionesAsync();
         return View(new UsuarioEditViewModel
         {
@@ -59,6 +61,8 @@ public class UsuariosController(
     {
         var usuario = await userManager.FindByIdAsync(model.Id);
         if (usuario is null) return NotFound();
+        if (!User.IsInRole("SuperAdministrador") && await userManager.IsInRoleAsync(usuario, "SuperAdministrador"))
+            return Forbid();
         if (model.Rol == "SuperAdministrador" && !await userManager.IsInRoleAsync(usuario, "SuperAdministrador"))
         {
             var superAdmins = await userManager.GetUsersInRoleAsync("SuperAdministrador");
@@ -142,6 +146,8 @@ public class UsuariosController(
     {
         var usuario = await userManager.FindByIdAsync(id);
         if (usuario is null) return NotFound();
+        if (!User.IsInRole("SuperAdministrador") && await userManager.IsInRoleAsync(usuario, "SuperAdministrador"))
+            return Forbid();
 
         usuario.Activo = !usuario.Activo;
         await userManager.UpdateAsync(usuario);

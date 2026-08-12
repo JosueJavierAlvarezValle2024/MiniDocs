@@ -35,10 +35,17 @@
                     <td>@(usuario.Departamento?.Nombre ?? "—")</td>
                     <td><span class="badge @(usuario.Activo ? "text-bg-success" : "text-bg-secondary")">@(usuario.Activo ? "Activo" : "Inactivo")</span></td>
                     <td class="text-end">
-                        <a asp-action="Edit" asp-route-id="@usuario.Id" class="btn btn-sm btn-outline-primary">Editar</a>
-                        <form asp-action="ToggleActive" asp-route-id="@usuario.Id" method="post">
-                            <button type="submit" class="btn btn-sm btn-outline-secondary">@(usuario.Activo ? "Desactivar" : "Activar")</button>
-                        </form>
+                        @if (User.IsInRole("SuperAdministrador") || roles[usuario.Id] != "SuperAdministrador")
+                        {
+                            <a asp-action="Edit" asp-route-id="@usuario.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                            <form asp-action="ToggleActive" asp-route-id="@usuario.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-secondary">@(usuario.Activo ? "Desactivar" : "Activar")</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted small">Cuenta protegida</span>
+                        }
                     </td>
                 </tr>
             }
