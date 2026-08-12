@@ -1,0 +1,34 @@
+@model MiniDocs.Models.Departamento
+
+@{
+    ViewData["Title"] = "Editar departamento";
+}
+
+<h1>Editar departamento</h1>
+<p class="text-muted">Actualiza la información o cambia su estado.</p>
+
+<form asp-action="Edit" method="post" class="mt-4 col-lg-8">
+    <input asp-for="Id" type="hidden" />
+    <input asp-for="FechaCreacion" type="hidden" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control" autocomplete="off" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Descripcion" class="form-label"></label>
+        <textarea asp-for="Descripcion" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+    <div class="form-check mb-3">
+        <input asp-for="Activo" class="form-check-input" />
+        <label asp-for="Activo" class="form-check-label"></label>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a asp-action="Index" class="btn btn-link">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

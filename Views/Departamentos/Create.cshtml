@@ -1,0 +1,28 @@
+@model MiniDocs.Models.Departamento
+
+@{
+    ViewData["Title"] = "Nuevo departamento";
+}
+
+<h1>Nuevo departamento</h1>
+<p class="text-muted">Registra un área para organizar los documentos.</p>
+
+<form asp-action="Create" method="post" class="mt-4 col-lg-8">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control" autocomplete="off" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Descripcion" class="form-label"></label>
+        <textarea asp-for="Descripcion" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Descripcion" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-link">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
