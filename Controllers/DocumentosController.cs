@@ -21,7 +21,7 @@ public class DocumentosController(
 
     public async Task<IActionResult> Index(string? busqueda, int? departamentoId)
     {
-        var esAdmin = User.IsInRole("Administrador");
+        var esAdmin = User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador");
         var consulta = context.Documentos
             .Include(d => d.Departamento)
             .Include(d => d.Usuario)
@@ -160,7 +160,7 @@ public class DocumentosController(
     private async Task<Documento?> ObtenerPermitidoAsync(int id)
     {
         var documento = await context.Documentos.FirstOrDefaultAsync(d => d.Id == id && d.Activo);
-        if (documento is null || User.IsInRole("Administrador")) return documento;
+        if (documento is null || User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador")) return documento;
         return documento.UsuarioId == userManager.GetUserId(User) ? documento : null;
     }
 

@@ -12,7 +12,7 @@ public class HomeController(ApplicationDbContext context) : Controller
     {
         var dashboard = new DashboardViewModel
         {
-            EsAdministrador = User.IsInRole("Administrador")
+            EsAdministrador = User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador")
         };
 
         if (User.Identity?.IsAuthenticated == true)
