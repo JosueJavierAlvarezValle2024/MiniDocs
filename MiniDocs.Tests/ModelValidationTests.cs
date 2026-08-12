@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using MiniDocs.Models;
+using MiniDocs.Controllers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MiniDocs.Tests;
 
@@ -35,6 +37,27 @@ public class ModelValidationTests
     {
         var model = new UsuarioCreateViewModel { NombreCompleto = "Usuario de prueba", Email = "usuario@minidocs.local", Password = "Prueba2026!", Rol = "Usuario" };
         Assert.Empty(Validar(model));
+    }
+
+    [Fact]
+    public void Usuarios_requiere_rol_administrativo()
+    {
+        var authorize = typeof(UsuariosController).GetCustomAttributes(typeof(AuthorizeAttribute), true).Cast<AuthorizeAttribute>().Single();
+        Assert.Equal("Administrador,SuperAdministrador", authorize.Roles);
+    }
+
+    [Fact]
+    public void Departamentos_requiere_rol_administrativo()
+    {
+        var authorize = typeof(DepartamentosController).GetCustomAttributes(typeof(AuthorizeAttribute), true).Cast<AuthorizeAttribute>().Single();
+        Assert.Equal("Administrador,SuperAdministrador", authorize.Roles);
+    }
+
+    [Fact]
+    public void Documentos_requiere_autenticacion()
+    {
+        var authorize = typeof(DocumentosController).GetCustomAttributes(typeof(AuthorizeAttribute), true).Cast<AuthorizeAttribute>().Single();
+        Assert.Null(authorize.Roles);
     }
 
     private static List<ValidationResult> Validar(object model)
