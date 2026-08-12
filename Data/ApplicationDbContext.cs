@@ -8,6 +8,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Departamento> Departamentos => Set<Departamento>();
     public DbSet<Documento> Documentos => Set<Documento>();
+    public DbSet<AuditoriaDocumento> AuditoriasDocumentos => Set<AuditoriaDocumento>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -27,6 +28,18 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             .HasOne(d => d.Departamento)
             .WithMany()
             .HasForeignKey(d => d.DepartamentoId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<AuditoriaDocumento>()
+            .HasOne(a => a.Documento)
+            .WithMany()
+            .HasForeignKey(a => a.DocumentoId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<AuditoriaDocumento>()
+            .HasOne(a => a.Usuario)
+            .WithMany()
+            .HasForeignKey(a => a.UsuarioId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<Documento>()

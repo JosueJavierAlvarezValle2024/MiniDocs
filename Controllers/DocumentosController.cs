@@ -105,6 +105,7 @@ public class DocumentosController(
 
         context.Documentos.Add(documento);
         await context.SaveChangesAsync();
+        await RegistrarAuditoriaAsync(documento.Id, "Creado");
         TempData["SuccessMessage"] = "Documento guardado correctamente.";
         return RedirectToAction(nameof(Index));
     }
@@ -115,6 +116,7 @@ public class DocumentosController(
         if (documento is null) return NotFound();
         var ruta = Path.Combine(environment.ContentRootPath, documento.RutaArchivo);
         if (!System.IO.File.Exists(ruta)) return NotFound("El archivo no existe en el almacenamiento.");
+        await RegistrarAuditoriaAsync(documento.Id, "Descargado");
         return PhysicalFile(ruta, documento.TipoMime, documento.NombreArchivoOriginal);
     }
 
@@ -140,6 +142,7 @@ public class DocumentosController(
         documento.DepartamentoId = model.DepartamentoId;
         documento.FechaActualizacion = DateTime.UtcNow;
         await context.SaveChangesAsync();
+        await RegistrarAuditoriaAsync(documento.Id, "Editado");
         TempData["SuccessMessage"] = "Documento actualizado correctamente.";
         return RedirectToAction(nameof(Index));
     }
@@ -153,6 +156,7 @@ public class DocumentosController(
         documento.Activo = false;
         documento.FechaActualizacion = DateTime.UtcNow;
         await context.SaveChangesAsync();
+        await RegistrarAuditoriaAsync(documento.Id, "Eliminado");
         TempData["SuccessMessage"] = "Documento eliminado correctamente.";
         return RedirectToAction(nameof(Index));
     }
@@ -169,5 +173,18 @@ public class DocumentosController(
         ViewBag.Departamentos = new SelectList(
             await context.Departamentos.Where(d => d.Activo).OrderBy(d => d.Nombre).ToListAsync(),
             nameof(Departamento.Id), nameof(Departamento.Nombre));
+    }
+
+    private async Task RegistrarAuditoriaAsync(int documentoId, string accion)
+    {
+        var usuarioId = userManager.GetUserId(User);
+        if (usuarioId is null) return;
+        context.AuditoriasDocumentos.Add(new AuditoriaDocumento
+        {
+            DocumentoId = documentoId,
+            UsuarioId = usuarioId,
+            Accion = accion
+        });
+        await context.SaveChangesAsync();
     }
 }
