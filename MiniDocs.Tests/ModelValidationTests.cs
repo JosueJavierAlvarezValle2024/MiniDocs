@@ -60,6 +60,13 @@ public class ModelValidationTests
         Assert.Null(authorize.Roles);
     }
 
+    [Fact]
+    public void Auditoria_requiere_rol_administrativo()
+    {
+        var authorize = typeof(AuditoriaController).GetCustomAttributes(typeof(AuthorizeAttribute), true).Single();
+        Assert.Equal("Administrador,SuperAdministrador", ((AuthorizeAttribute)authorize).Roles);
+    }
+
     private static List<ValidationResult> Validar(object model)
     {
         var contexto = new ValidationContext(model);
