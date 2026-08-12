@@ -1,8 +1,29 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+@model MiniDocs.Models.DashboardViewModel
+@{ ViewData["Title"] = "Panel principal"; }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (User.Identity?.IsAuthenticated != true)
+{
+    <div class="text-center py-5">
+        <h1 class="display-4">Bienvenido a MiniDocs</h1>
+        <p class="lead">Gestiona tus documentos internos de forma sencilla.</p>
+        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary">Iniciar sesión</a>
+    </div>
+}
+else
+{
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div><h1>Panel principal</h1><p class="text-muted mb-0">Bienvenido a MiniDocs. Aquí tienes un resumen del sistema.</p></div>
+        <a asp-controller="Documentos" asp-action="Create" class="btn btn-primary">Nuevo documento</a>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-4"><div class="card shadow-sm h-100"><div class="card-body"><div class="text-muted">Documentos activos</div><div class="display-5 fw-semibold">@Model.Documentos</div><a asp-controller="Documentos" asp-action="Index">Ver documentos</a></div></div></div>
+        <div class="col-md-4"><div class="card shadow-sm h-100"><div class="card-body"><div class="text-muted">Departamentos activos</div><div class="display-5 fw-semibold">@Model.Departamentos</div><a asp-controller="Departamentos" asp-action="Index">Ver departamentos</a></div></div></div>
+        @if (Model.EsAdministrador)
+        {
+            <div class="col-md-4"><div class="card shadow-sm h-100"><div class="card-body"><div class="text-muted">Usuarios activos</div><div class="display-5 fw-semibold">@Model.Usuarios</div><a asp-controller="Usuarios" asp-action="Index">Ver usuarios</a></div></div></div>
+        }
+    </div>
+
+    <div class="card shadow-sm"><div class="card-body"><h2 class="h5">Acciones rápidas</h2><div class="d-flex flex-wrap gap-2"><a asp-controller="Documentos" asp-action="Create" class="btn btn-outline-primary">Cargar documento</a><a asp-controller="Documentos" asp-action="Index" class="btn btn-outline-secondary">Consultar documentos</a>@if (Model.EsAdministrador) { <a asp-controller="Usuarios" asp-action="Create" class="btn btn-outline-secondary">Crear usuario</a> }</div></div></div>
+}
