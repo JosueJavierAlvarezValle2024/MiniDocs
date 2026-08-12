@@ -25,3 +25,10 @@ Proyecto inicial creado. La autenticación, los roles y la migración inicial se
    ```
 
 4. Ejecuta `dotnet run` dentro de esta carpeta.
+
+Para crear la cuenta única de SuperAdministrador, configura también:
+
+```powershell
+dotnet user-secrets set "SuperAdminSeed:Email" "superadmin@minidocs.local"
+dotnet user-secrets set "SuperAdminSeed:Password" "Cambia_Esta_Clave_123!"
+```

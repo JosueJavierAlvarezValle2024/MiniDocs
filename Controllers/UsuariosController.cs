@@ -8,7 +8,7 @@ using MiniDocs.Models;
 
 namespace MiniDocs.Controllers;
 
-[Authorize(Roles = "Administrador")]
+[Authorize(Roles = "Administrador,SuperAdministrador")]
 public class UsuariosController(
     UserManager<ApplicationUser> userManager,
     RoleManager<IdentityRole> roleManager,
@@ -147,8 +147,9 @@ public class UsuariosController(
             await context.Departamentos.Where(d => d.Activo).OrderBy(d => d.Nombre).ToListAsync(),
             nameof(Departamento.Id), nameof(Departamento.Nombre));
 
-        ViewBag.Roles = new SelectList(
-            await roleManager.Roles.OrderBy(r => r.Name).ToListAsync(),
-            nameof(IdentityRole.Name), nameof(IdentityRole.Name));
+        var nombresPermitidos = User.IsInRole("SuperAdministrador")
+            ? new[] { "Administrador", "Usuario", "SuperAdministrador" }
+            : new[] { "Usuario" };
+        ViewBag.Roles = new SelectList(nombresPermitidos);
     }
 }

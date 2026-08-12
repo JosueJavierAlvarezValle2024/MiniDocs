@@ -6,7 +6,7 @@ using MiniDocs.Models;
 
 namespace MiniDocs.Controllers;
 
-[Authorize(Roles = "Administrador")]
+[Authorize(Roles = "Administrador,SuperAdministrador")]
 public class DepartamentosController(ApplicationDbContext context) : Controller
 {
     public async Task<IActionResult> Index()
