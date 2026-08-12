@@ -10,6 +10,11 @@ obj/
 appsettings.Local.json
 appsettings.*.Local.json
 
+## Runtime files
+App_Data/Uploads/
+*.err.log
+*.out.log
+
 ## IDE and OS files
 .idea/
 .vscode/
