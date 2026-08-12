@@ -17,4 +17,11 @@ Proyecto inicial creado. La autenticación, los roles y la migración inicial se
 
 1. Configura SQL Server o LocalDB.
 2. Revisa la cadena `DefaultConnection` en `appsettings.json`.
-3. Ejecuta `dotnet run` dentro de esta carpeta.
+3. Configura las credenciales del administrador mediante User Secrets:
+
+   ```powershell
+   dotnet user-secrets set "AdminSeed:Email" "admin@minidocs.local"
+   dotnet user-secrets set "AdminSeed:Password" "Cambia_Esta_Clave_123!"
+   ```
+
+4. Ejecuta `dotnet run` dentro de esta carpeta.

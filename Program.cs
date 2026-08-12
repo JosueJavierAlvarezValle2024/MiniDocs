@@ -32,7 +32,15 @@ else
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILoggerFactory>().CreateLogger("IdentitySeeder");
+    await IdentitySeeder.SeedAsync(services, app.Configuration, logger);
+}
 
 app.MapStaticAssets();
 
