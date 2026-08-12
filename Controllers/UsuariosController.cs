@@ -11,7 +11,6 @@ namespace MiniDocs.Controllers;
 [Authorize(Roles = "Administrador,SuperAdministrador")]
 public class UsuariosController(
     UserManager<ApplicationUser> userManager,
-    RoleManager<IdentityRole> roleManager,
     ApplicationDbContext context) : Controller
 {
     public async Task<IActionResult> Index()
