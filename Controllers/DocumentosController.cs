@@ -118,6 +118,32 @@ public class DocumentosController(
         return PhysicalFile(ruta, documento.TipoMime, documento.NombreArchivoOriginal);
     }
 
+    public async Task<IActionResult> Edit(int id)
+    {
+        var documento = await ObtenerPermitidoAsync(id);
+        if (documento is null) return NotFound();
+        await CargarDepartamentosAsync();
+        return View(new DocumentoEditViewModel { Id = documento.Id, Titulo = documento.Titulo, Descripcion = documento.Descripcion, DepartamentoId = documento.DepartamentoId, NombreArchivoOriginal = documento.NombreArchivoOriginal });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(DocumentoEditViewModel model)
+    {
+        var documento = await ObtenerPermitidoAsync(model.Id);
+        if (documento is null) return NotFound();
+        if (!await context.Departamentos.AnyAsync(d => d.Id == model.DepartamentoId && d.Activo))
+            ModelState.AddModelError(nameof(model.DepartamentoId), "Selecciona un departamento activo.");
+        if (!ModelState.IsValid) { await CargarDepartamentosAsync(); return View(model); }
+        documento.Titulo = model.Titulo;
+        documento.Descripcion = model.Descripcion;
+        documento.DepartamentoId = model.DepartamentoId;
+        documento.FechaActualizacion = DateTime.UtcNow;
+        await context.SaveChangesAsync();
+        TempData["SuccessMessage"] = "Documento actualizado correctamente.";
+        return RedirectToAction(nameof(Index));
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Delete(int id)

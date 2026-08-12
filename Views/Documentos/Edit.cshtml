@@ -1,0 +1,13 @@
+@model MiniDocs.Models.DocumentoEditViewModel
+@{ ViewData["Title"] = "Editar documento"; }
+<h1>Editar documento</h1><p class="text-muted">Actualiza los datos. El archivo actual se conserva.</p>
+<form asp-action="Edit" method="post" class="mt-4 col-lg-8">
+    <input asp-for="Id" type="hidden" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3"><label asp-for="Titulo" class="form-label"></label><input asp-for="Titulo" class="form-control" /><span asp-validation-for="Titulo" class="text-danger"></span></div>
+    <div class="mb-3"><label asp-for="Descripcion" class="form-label"></label><textarea asp-for="Descripcion" class="form-control" rows="3"></textarea></div>
+    <div class="mb-3"><label asp-for="DepartamentoId" class="form-label">Departamento</label><select asp-for="DepartamentoId" asp-items="ViewBag.Departamentos" class="form-select"></select><span asp-validation-for="DepartamentoId" class="text-danger"></span></div>
+    <div class="mb-3"><label asp-for="NombreArchivoOriginal" class="form-label">Archivo actual</label><input asp-for="NombreArchivoOriginal" class="form-control" readonly /></div>
+    <button class="btn btn-primary" type="submit">Guardar cambios</button><a asp-action="Index" class="btn btn-link">Cancelar</a>
+</form>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }
